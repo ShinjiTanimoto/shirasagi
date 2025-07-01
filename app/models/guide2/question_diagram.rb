@@ -1,16 +1,16 @@
-class Guide::QuestionDiagram
+class Guide2::QuestionDiagram
   attr_reader :node, :roots, :longest_length, :shortest_length, :questions, :unevaluated_longest_length
 
   def initialize(node)
     @node = node
     @all_build_points = {}
     @all_procedures = {}
-    question_ids = Guide::Procedure.node(node).
+    question_ids = Guide2::Procedure.node(node).
       pluck(:cond_yes_question_ids, :cond_no_question_ids, :cond_or_question_ids).
       flatten.
       uniq.
       compact
-    @referenced_questions = Guide::Question.node(node).
+    @referenced_questions = Guide2::Question.node(node).
       in(id: question_ids).
       entries
     @roots = @referenced_questions.map { |point| build_diagram(point) }
@@ -49,30 +49,34 @@ class Guide::QuestionDiagram
         next if next_points.blank?
 
         next_points = next_points.map do |next_point|
-          next if next_point.question?
-
-          @procedure_necessary_count[next_point.id] ||= 0
-          @procedure_not_necessary_count[next_point.id] ||= 0
-          @procedure_optional_necessary_count[next_point.id] ||= 0
-          if point.necessary_transitions[key].present? && point.necessary_transitions[key].to_a.include?(next_point)
-            @procedure_necessary_count[next_point.id] += 1
+          if next_point.question?
+            if @referenced_questions.include?(next_point)
+              nil
+            else
+              @referenced_questions << next_point
+              next_point
+            end
+          else
+            @procedure_necessary_count[next_point.id] ||= 0
+            @procedure_not_necessary_count[next_point.id] ||= 0
+            @procedure_optional_necessary_count[next_point.id] ||= 0
+            if point.necessary_transitions[key].present? && point.necessary_transitions[key].to_a.include?(next_point)
+              @procedure_necessary_count[next_point.id] += 1
+            end
+            if point.not_necessary_transitions[key].present? && point.not_necessary_transitions[key].to_a.include?(next_point)
+              @procedure_not_necessary_count[next_point.id] += 1
+            end
+            if point.optional_necessary_transitions[key].present? &&
+               point.optional_necessary_transitions[key].to_a.include?(next_point)
+              @procedure_optional_necessary_count[next_point.id] += 1
+            end
+            if (next_point.necessary_count.zero? || next_point.necessary_count <= @procedure_necessary_count[next_point.id]) &&
+               (next_point.not_necessary_count.zero? || next_point.not_necessary_count <= @procedure_not_necessary_count[next_point.id]) &&
+               (next_point.optional_necessary_count.zero? || @procedure_optional_necessary_count[next_point.id] > 0)
+              @procedures[next_point.id] = next_point
+            end
+            nil
           end
-          if point.not_necessary_transitions[key].present? && point.not_necessary_transitions[key].to_a.include?(next_point)
-            @procedure_not_necessary_count[next_point.id] += 1
-          end
-          if point.optional_necessary_transitions[key].present? &&
-             point.optional_necessary_transitions[key].to_a.include?(next_point)
-            @procedure_optional_necessary_count[next_point.id] += 1
-          end
-          if (next_point.necessary_count.zero? || next_point.necessary_count <= @procedure_necessary_count[next_point.id]) &&
-             (
-               next_point.not_necessary_count.zero? ||
-               next_point.not_necessary_count <= @procedure_not_necessary_count[next_point.id]
-             ) &&
-             (next_point.optional_necessary_count.zero? || @procedure_optional_necessary_count[next_point.id] > 0)
-            @procedures[next_point.id] = next_point
-          end
-          nil
         end.compact
 
         points = next_points + points if next_points.present?
