@@ -1,0 +1,57 @@
+class Guide2::Importer
+  include ActiveModel::Model
+  include SS::PermitParams
+  include Cms::SitePermission
+  include Cms::CsvImportBase
+  include Guide2::Importer::Procedure
+  include Guide2::Importer::Question
+  include Guide2::Importer::Transition
+  include Guide2::Importer::Combination
+
+  set_permission_name "guide2_procedures"
+
+  attr_accessor :cur_site, :cur_node, :cur_user, :in_file
+
+  permit_params :in_file
+
+  private
+
+  def validate_import
+    if in_file.blank?
+      errors.add(:base, I18n.t('ss.errors.import.blank_file'))
+      return
+    end
+
+    if ::File.extname(in_file.original_filename).casecmp(".csv") != 0
+      errors.add(:base, I18n.t('ss.errors.import.invalid_file_type'))
+      return
+    end
+
+    unless self.class.valid_csv?(in_file, max_read_lines: 1)
+      errors.add(:base, I18n.t('ss.errors.import.invalid_file_type'))
+      return
+    end
+
+    true
+  end
+
+  def edge_headers
+    @edge_headers ||= begin
+      headers = @row.headers.flat_map { |v| v.scan(/^(#{I18n.t("guide2.transition")}(\d+))$/) }
+      headers = headers.map { |v, idx| (idx.to_i > 0) ? [v, (idx.to_i - 1)] : nil }.compact
+      headers
+    end
+  end
+
+  def explanation_headers
+    @explanation_headers ||= begin
+      headers = @row.headers.flat_map { |v| v.scan(/^(#{I18n.t("guide2.explanation")}(\d+))$/) }
+      headers = headers.map { |v, idx| (idx.to_i > 0) ? [v, (idx.to_i - 1)] : nil }.compact
+      headers
+    end
+  end
+
+  def encode_sjis(str)
+    str.encode("SJIS", invalid: :replace, undef: :replace)
+  end
+end

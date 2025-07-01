@@ -1,0 +1,38 @@
+<div class="main-box">
+  <div class="mb-3 guide-importer">
+    <b><%= t("guide2.labels.import_combinations") %></b><br>
+    <%= t("guide2.notice.import_combination") %>
+  </div>
+  <div class="mb-2 guide-importer">
+    <%= link_to t("ss.buttons.download"), { action: :download_combinations } %>
+    | <%= link_to t("ss.buttons.import"), { action: :import_combinations } %>
+  </div>
+  <div class="mt-4 guide-template">
+    <%= link_to t("ss.links.download_template"), { action: :download_combination_template } %>
+  </div>
+
+  <hr size="1" class="my-3" style="border: none; background-color: #ccc;">
+
+  <div class="mb-3 guide-importer">
+    <b><%= t("guide2.labels.import_partials") %></b><br>
+    <%= t("guide2.notice.import_summary") %>
+  </div>
+  <div class="mb-2 guide-importer">
+    <h2>1. <%= t("guide2.labels.import_procedures") %></h2>
+    <%= link_to t("ss.buttons.download"), { action: :download_procedures } %>
+    | <%= link_to t("ss.buttons.import"), { action: :import_procedures } %>
+  </div>
+  <div class="mb-2 guide-importer">
+    <h2>2. <%= t("guide2.labels.import_questions") %></h2>
+    <%= link_to t("ss.buttons.download"), { action: :download_questions } %>
+    | <%= link_to t("ss.buttons.import"), { action: :import_questions } %>
+  </div>
+  <div class="mb-2 guide-importer">
+    <h2>3. <%= t("guide2.labels.import_transitions") %></h2>
+    <%= link_to t("ss.buttons.download"), { action: :download_transitions } %>
+    | <%= link_to t("ss.buttons.import"), { action: :import_transitions } %>
+  </div>
+  <div class="mt-4 guide-template">
+    <%= link_to t("ss.links.download_template"), { action: :download_template } %>
+  </div>
+</div>

@@ -462,6 +462,10 @@ save_node route: "key_visual/image", filename: "key-visual", name: "キービジ
 @guide_node = save_node route: "guide/guide", filename: "purpose-guide", name: "移住目的別ガイド",
   layout_id: @layouts["general"].id, guide_index_html: '<p class="guide__text">移住に必要な手続きをご案内いたします。</p>'
 
+## guide2
+@guide2_node = save_node route: "guide2/guide", filename: "purpose-guide2", name: "移住目的別ガイド",
+  layout_id: @layouts["general"].id, guide_index_html: '<p class="guide__text">移住に必要な手続きをご案内いたします。</p>'
+
 ## line
 save_node route: "cms/line_hub", filename: "receiver", name: "LINE HUB", layout_id: @layouts["general"].id
 

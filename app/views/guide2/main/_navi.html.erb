@@ -1,0 +1,14 @@
+<%= node_navi :guide2 do %>
+  <% if Guide2::Procedure.allowed?(:read, @cur_user, site: @cur_site, node: @cur_node) %>
+    <h3><%= link_to t("guide2.procedure"), guide2_procedures_path %></h3>
+  <% end %>
+  <% if Guide2::Question.allowed?(:read, @cur_user, site: @cur_site, node: @cur_node) %>
+    <h3><%= link_to t("guide2.question"), guide2_questions_path %></h3>
+    <h3><%= link_to t("guide2.importer"), guide2_importers_path %></h3>
+    <% if Rails.env.development? %>
+      <h3><%= link_to t("guide2.diagnostic"), guide2_diagnostic_path %></h3>
+    <% else %>
+      <!--<h3><%= link_to t("guide2.diagnostic"), guide2_diagnostic_path %></h3>-->
+    <% end %>
+  <% end %>
+<% end %>

@@ -1,0 +1,19 @@
+<dl class="see">
+  <dt><%= @model.t :question_type %></dt>
+  <dd><%= @item.label :question_type %></dd>
+
+  <% if @item.question_type == "choices" %>
+    <dt><%= @model.t :check_type %></dt>
+    <dd><%= @item.label :check_type %></dd>
+  <% end %>
+
+  <% @item.edges.each_with_index do |edge, no| %>
+    <% if @item.question_type == "choices" %>
+      <dt><%= "#{t("guide.labels.choices")}#{no + 1}" %></dt>
+      <dd><%= edge.value %></dd>
+      <% if edge.explanation.present? %>
+        <dd><%= edge.explanation %></dd>
+      <% end %>
+    <% end %>
+  <% end %>
+</dl>

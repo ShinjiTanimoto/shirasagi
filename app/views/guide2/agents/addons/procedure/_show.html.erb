@@ -1,0 +1,97 @@
+<%= code_editor "##{addon[:id]} .html", mode: :html, readonly: true %>
+
+<dl class="see">
+  <dt><%= @model.t :html %></dt>
+  <dd>
+    <% if @item.html.present? %>
+      <%= text_area_tag :html, @item.html, class: "html" %>
+    <% end %>
+  </dd>
+
+  <dt><%= @model.t :procedure_location %></dt>
+  <dd><%=br @item.procedure_location %></dd>
+
+  <dt><%= @model.t :belongings %></dt>
+  <dd><%=br @item.belongings %></dd>
+
+  <dt><%= @model.t :procedure_applicant %></dt>
+  <dd><%=br @item.procedure_applicant %></dd>
+
+  <dt><%= @model.t :remarks %></dt>
+  <dd><%=br @item.remarks %></dd>
+
+  <% if @item.cond_yes_questions.present? && @item.cond_yes_edge_values.present? %>
+    <dt><%= @model.t :cond_yes_edge_values %></dt>
+    <dd>
+      <table class="index">
+        <thead>
+          <tr>
+            <th class="name"><%= @model.t :name %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @item.cond_yes_questions.each do |question| %>
+            <% question.edges.in(value: @item.cond_yes_edge_values.select { |v| v[:question_id].to_s == question.id.to_s }.collect { |v| v[:edge_value] }).each do |edge| %>
+              <tr>
+                <td>
+                  <%= link_to "#{question.name}:#{edge.value}", guide2_question_path(id: question.id) %>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </dd>
+  <% end %>
+
+  <% if @item.cond_no_questions.present? && @item.cond_no_edge_values.present? %>
+    <dt><%= @model.t :cond_no_edge_ids %></dt>
+    <dd>
+      <table class="index">
+        <thead>
+          <tr>
+            <th class="name"><%= @model.t :name %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @item.cond_no_questions.each do |question| %>
+            <% question.edges.in(value: @item.cond_no_edge_values.select { |v| v[:question_id].to_s == question.id.to_s }.collect { |v| v[:edge_value] }).each do |edge| %>
+              <tr>
+                <td>
+                  <%= link_to "#{question.name}:#{edge.value}", guide2_question_path(id: question.id) %>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </dd>
+  <% end %>
+
+  <% if @item.cond_or_questions.present? && @item.cond_or_edge_values.present? %>
+    <dt><%= @model.t :cond_or_edge_ids %></dt>
+    <dd>
+      <table class="index">
+        <thead>
+          <tr>
+            <th class="name"><%= @model.t :name %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @item.cond_or_questions.each do |question| %>
+            <% question.edges.in(value: @item.cond_or_edge_values.select { |v| v[:question_id].to_s == question.id.to_s }.collect { |v| v[:edge_value] }).each do |edge| %>
+              <tr>
+                <td>
+                  <%= link_to "#{question.name}:#{edge.value}", guide2_question_path(id: question.id) %>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </dd>
+  <% end %>
+</dl>

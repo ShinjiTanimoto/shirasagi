@@ -92,6 +92,7 @@
 //= require cms/lib/image_map
 //= require event/lib/form
 //= require guide/lib/diagnostic
+//= require guide2/lib/diagnostic
 //= require map/googlemaps/map
 //= require map/googlemaps/form
 //= require map/googlemaps/facility/search
