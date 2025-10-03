@@ -188,9 +188,13 @@ describe "article_agents_parts_page", type: :feature, dbscope: :example do
     it do
       visit "#{node.full_url}/index.html"
       within ".parts" do
-        expect(page).to have_css("article", count: 1)
+        expect(page).to have_css("article", count: 2)
         within ".item-#{::File.basename(item0.basename, ".*")}" do
           expect(page).to have_link(item0.name, href: item0.url)
+        end
+        within ".item-#{::File.basename(item2.basename, ".*")}" do
+          # プレビューモードでは閲覧できない
+          expect(page).to have_link(item2.name, href: item2.url)
         end
       end
     end

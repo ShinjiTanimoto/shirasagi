@@ -165,9 +165,9 @@ describe Article::Page, dbscope: :example do
 
         # before page is closed
         subject.reload
-        expect(described_class.and_public(close_date).count).to eq 0
+        expect(described_class.and_public(close_date).count).to eq 0 # プレビューモードでは閲覧できない
         Timecop.freeze(close_date) do
-          expect(described_class.and_public.count).to eq 0
+          expect(described_class.and_public.count).to eq 1 # 通常モードでは閲覧できる
           expect(subject.public?).to be_truthy
         end
 
@@ -228,7 +228,7 @@ describe Article::Page, dbscope: :example do
 
       # at close date
       expected = Timecop.freeze(close_date) { described_class.and_public.count }
-      expect(described_class.and_public(close_date).count).to eq expected
+      expect(described_class.and_public(close_date).count).to eq 0
 
       # at close date after release page job is completed
       Timecop.freeze(close_date) do
